@@ -1,56 +1,67 @@
 module Main exposing (main)
 
 import Html exposing (Html)
-import Material.Extra exposing (..)
+import Material.Extra as Material
+    exposing
+        ( Views
+        , MdlMsg
+        , program
+        , component
+        , onInput
+        )
+import InputComponent exposing (input)
 
 
 main =
     program
         { init = init
         , update = update
-        , subscriptions = subscriptions
+        , subscriptions = \_ -> Sub.none
         , view = view
         }
 
 
-
-{- actual model -}
-
-
 type alias Model =
-    { state : Maybe Int }
+    { state0 : Maybe Int
+    , state1 : Maybe Int
+    }
 
 
 defaultModel =
-    { state = Nothing }
+    { state0 = Nothing
+    , state1 = Nothing
+    }
 
 
 type Msg
-    = Update (Maybe Int)
+    = Update0 (Maybe Int)
+    | Update1 (Maybe Int)
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { state = Nothing }, Cmd.none )
+    ( { state0 = Nothing
+      , state1 = Nothing
+      }
+    , Cmd.none
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Update newState ->
-            { model | state = newState } ! []
+        Update0 newState ->
+            { model | state0 = newState } ! []
+
+        Update1 newState ->
+            { model | state1 = newState } ! []
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
-
-
-view : Model -> Components Msg -> Html (MdlMsg Msg)
-view model mdl =
+view : Model -> Views Msg -> Html (MdlMsg Msg)
+view model views =
     Html.div []
-        [ mdl.textfield [ 0 ]
-            [ onInput (Update << Result.toMaybe << String.toInt) ]
-            []
-        , Html.text (toString model.state)
+        [ views.render [ 0 ] (Material.embed (input Update0) model.state0)
+        , Html.text (toString model.state0)
+        , views.render [ 1 ] (Material.embed (input Update1) model.state1)
+        , Html.text (toString model.state1)
         ]
