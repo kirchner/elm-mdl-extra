@@ -2,7 +2,7 @@
     "version": "1.0.0",
     "summary": "extra functions for elm-mdl",
     "repository": "https://github.com/kirchner/elm-mdl-extra.git",
-    "license": "",
+    "license": "Apache License, version 2.0",
     "source-directories": [
         "./src/",
         "./demo/"
